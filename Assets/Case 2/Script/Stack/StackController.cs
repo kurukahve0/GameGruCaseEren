@@ -7,8 +7,14 @@ namespace Case_2
         #region Variable
 
         public bool IsMovementOpen { get; set; } = false;
+        public MeshRenderer MeshRenderer=>meshRenderer;
         
-        public MeshRenderer MeshRenderer;
+        [Header("Definitions")] 
+        [SerializeField] private MeshRenderer meshRenderer;
+        [SerializeField] private Rigidbody rigidbody;
+        
+        
+        
         private float movementSpeed=2f;
         private bool movingRight;
         #endregion
@@ -46,6 +52,12 @@ namespace Case_2
             {
                 movingRight = true;
             }
+        }
+
+        public void OpenPhysics(bool isRight)
+        {
+            rigidbody.isKinematic = false;
+            rigidbody.AddTorque((isRight ?- Vector3.forward : Vector3.forward)*2f,ForceMode.Impulse);
         }
 
 

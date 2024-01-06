@@ -72,34 +72,10 @@ namespace Case_2
             stack.transform.localPosition = stackPosition;
             stack.transform.localScale = new Vector3(xFrontSize - (xBackSize - distanceStacks),
                 stack.transform.localScale.y, stack.transform.localScale.z);
+            
+            stack.OpenPhysics(isRight);
         }
-
-
-        void CreateNecessaryStackPieceForRight(float xBackSize, float distanceStacks)
-        {
-            RemoveLastStack();
-            var stack = Instantiate(GameManager.Instance.GameData.StackPrefab, stackParent);
-            Vector3 stackPosition = activeStack[^1].transform.localPosition;
-            stackPosition.z += (activeStack.Count) * zDistance;
-            stackPosition.x = activeStack[^1].transform.localPosition.x + distanceStacks / 2f;
-            stack.transform.localPosition = stackPosition;
-            stack.transform.localScale = new Vector3(xBackSize - distanceStacks, stack.transform.localScale.y,
-                stack.transform.localScale.z);
-            activeStack.Add(stack);
-        }
-
-        void CreateTrashStackPieceForRight(float xBackSize, float xFrontSize, float distanceStacks)
-        {
-            //RemoveLastStack();
-            var stack = Instantiate(GameManager.Instance.GameData.StackPrefab, stackParent);
-            Vector3 stackPosition = activeStack[^2].transform.localPosition;
-            stackPosition.z += (activeStack.Count - 1) * zDistance;
-            stackPosition.x = activeStack[^2].transform.localPosition.x + xFrontSize / 2 + distanceStacks / 2f;
-            stack.transform.localPosition = stackPosition;
-            stack.transform.localScale = new Vector3(xFrontSize - (xBackSize - distanceStacks),
-                stack.transform.localScale.y, stack.transform.localScale.z);
-        }
-
+        
 
         void RemoveLastStack()
         {
