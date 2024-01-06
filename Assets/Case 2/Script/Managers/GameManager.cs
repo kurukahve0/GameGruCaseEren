@@ -1,6 +1,8 @@
 using System;
 using Case_1;
+using Case_2.Data;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Case_2
 {
@@ -8,9 +10,21 @@ namespace Case_2
     {
         #region Variable
 
+        [Header("Definitions")] 
+        [SerializeField] private GameCanvasController gameCanvas;
+        
+        public GameData GameData;
+      
         public bool IsGameStart => isGameStart;
         private bool isGameStart;
-    
+
+
+        public bool IsStackCreateOpen { get; set; } = false;
+
+        public GameState CurrentState { get; private set; }
+
+        //Action
+        public static event Action<GameState> OnGameStateChange;
 
         #endregion
     
@@ -18,35 +32,63 @@ namespace Case_2
 
         void Start()
         {
+            UpdateState(GameState.GameCreateState);
+        }
+
+
+
+        #endregion
+        
+
+        #region State
+        
+        public void UpdateState(GameState state)
+        {
+            CurrentState = state;
+
+            switch (state)
+            {
+                case GameState.GameCreateState:
+                    GameCreateState();
+                    break;
+                case GameState.GameStartState:
+                    GameStart();
+                    break;
+                    
+            }
             
-        }
-
-        void Update()
-        {
-        
-        }
-
-        private void OnEnable()
-        {
-            EventManager.OnMouseButton += MouseInput;
-        }
-        
-        private void OnDisable()
-        {
-            EventManager.OnMouseButton -= MouseInput;
-        }
-
-        #endregion
+            OnGameStateChange?.Invoke(state);
     
-        #region Func
+        }
 
-        void MouseInput()
+
+        void GameCreateState()
         {
+            gameCanvas.StartTextOpening = true;
+            LevelManager.Instance.CreateLevel();
+         //   UpdateState(GameState.GameStartState);
+        }
+
+        void GameStart()
+        {
+            gameCanvas.StartTextOpening = false;
+            IsStackCreateOpen = true;
             isGameStart = true;
+            LevelManager.Instance.ActiveStackCreator.CreateNewStack();
+
         }
 
-    
+
+        
 
         #endregion
+    }
+
+
+    public enum GameState
+    {
+        GameCreateState,
+        GameStartState
+        
     }
 }
