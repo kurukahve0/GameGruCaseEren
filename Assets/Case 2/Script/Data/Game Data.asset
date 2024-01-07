@@ -18,7 +18,7 @@ MonoBehaviour:
   - -2.5
   - 2.5
   StackBaseScale: {x: 2.778142, y: 0.9654673, z: 2.67322}
-  StackMovementSpeed: 3
-  ChibiMovementSpeed: 1.75
+  StackMovementSpeed: 4
+  ChibiMovementSpeed: 2
   ChibiXLerpSpeed: 2.5
   ChibiCreateStackTriggerDistance: 2

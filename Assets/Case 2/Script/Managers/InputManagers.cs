@@ -28,7 +28,7 @@ namespace Case_2
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if (GameManager.Instance.CurrentState==GameState.GameCreateState)
+                if (GameManager.Instance.CurrentState==GameState.GameCreateState || GameManager.Instance.CurrentState==GameState.GameRestartState )
                 {
                     GameManager.Instance.UpdateState(GameState.GameStartState);
                 }

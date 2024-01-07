@@ -1,6 +1,7 @@
 using System;
 using Case_1;
 using Case_2.Data;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -53,9 +54,12 @@ namespace Case_2
                     GameCreateState();
                     break;
                 case GameState.GameStartState:
-                    GameStart();
+                    GameStartState();
                     break;
-                    
+                    case GameState.GameOverState:
+                        GameOverState();
+                        break;
+                        
             }
             
             OnGameStateChange?.Invoke(state);
@@ -65,22 +69,26 @@ namespace Case_2
 
         void GameCreateState()
         {
-            gameCanvas.StartTextOpening = true;
-            LevelManager.Instance.CreateLevel();
+           // LevelManager.Instance.CreateLevel();
          //   UpdateState(GameState.GameStartState);
         }
 
-        void GameStart()
+        void GameStartState()
         {
-            gameCanvas.StartTextOpening = false;
+          
             IsStackCreateOpen = true;
             isGameStart = true;
            // LevelManager.Instance.ActiveStackCreator.CreateNewStack();
-            chibiController.IsMovementOpen = true;
+            
         }
-        
-        
 
+
+        void GameOverState()
+        {
+            DOTween.Sequence()
+                .AppendInterval(4f)
+                .AppendCallback(() => UpdateState(GameState.GameRestartState));
+        }
 
         
 
@@ -101,7 +109,9 @@ namespace Case_2
     public enum GameState
     {
         GameCreateState,
-        GameStartState
+        GameStartState,
+        GameOverState,
+        GameRestartState
         
     }
 }

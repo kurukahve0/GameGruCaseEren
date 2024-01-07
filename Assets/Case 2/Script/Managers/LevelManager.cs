@@ -17,7 +17,7 @@ namespace Case_2
 
         private Vector3 levelFirstPosition = new Vector3(0, -.5f, 5f);
 
-        public Transform LastStackTransform => ActiveStackCreator.activeStacks[^1].transform;
+        public StackController LastStack => ActiveStackCreator.activeStacks[^1];
         public StackController NewStack => ActiveStackCreator.NewStack;
  
 
@@ -27,12 +27,12 @@ namespace Case_2
 
         private void OnEnable()
         {
-            //GameManager.OnGameStateChange += GameSateListener;
+            GameManager.OnGameStateChange += GameSateListener;
         }
 
         private void OnDisable()
         {
-          //  GameManager.OnGameStateChange -= GameSateListener;
+            GameManager.OnGameStateChange -= GameSateListener;
         }
         
         
@@ -67,7 +67,11 @@ namespace Case_2
             if (currentState==GameState.GameCreateState)
             {
                 CreateLevel();
-                
+            }else if (currentState==GameState.GameRestartState)
+            {
+                activeLevels.ForEach(x=>Destroy(x.gameObject));
+                activeLevels.Clear();
+                CreateLevel();
             }
         }
     

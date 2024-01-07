@@ -56,10 +56,11 @@ namespace Case_2
             }
         }
 
-        public void OpenPhysics(bool isRight)
+        public void OpenPhysics(Vector3 torqueDirection)
         {
             rigidbody.isKinematic = false;
-            rigidbody.AddTorque((isRight ?- Vector3.forward : Vector3.forward)*2f,ForceMode.Impulse);
+            rigidbody.AddTorque((torqueDirection)*2f,ForceMode.Impulse);
+            IsMovementOpen = false;
         }
 
 

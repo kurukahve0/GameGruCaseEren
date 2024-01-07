@@ -22,17 +22,25 @@ namespace Case_2
 
         public void CreateStack()
         {
+            if(!NewStack)
+                return;
+            
             float xBackSize = activeStacks[^1].XBoundsSize;
             float xFrontSize = NewStack.XBoundsSize;
             float distanceStacks =
-                Mathf.Abs(activeStacks[^1].transform.localPosition.x - NewStack.transform.localPosition.x);
+                Mathf.Abs( NewStack.transform.localPosition.x-activeStacks[^1].transform.localPosition.x );
 
 
             bool isRight = activeStacks[^1].transform.localPosition.x - NewStack.transform.localPosition.x < 0; // sağ sol ayarı için
 
-
-
-            if (Mathf.Abs(activeStacks[^1].transform.localPosition.x - NewStack.transform.localPosition.x)<.3f) // toleranslı yerleştirme
+            
+            
+            if (distanceStacks > xBackSize )
+            {
+                Debug.Log("distanceStacks "+distanceStacks+  " xBackSize / 2f "+ xBackSize );
+                FallNewStack();
+            }
+            else if (distanceStacks<.3f) // toleranslı yerleştirme
             {
                 PerfectPlacementForNewStack();
             }
@@ -40,8 +48,6 @@ namespace Case_2
             {
                 CreateTrashStackPiece(xBackSize, xFrontSize, distanceStacks, isRight);
                 CreateNecessaryStackPiece(xBackSize, distanceStacks, isRight);
-                
-
             }
             
         }
@@ -88,13 +94,19 @@ namespace Case_2
             stack.transform.localScale = new Vector3(xFrontSize - (xBackSize - distanceStacks),
                 stack.transform.localScale.y, stack.transform.localScale.z);
             
-            stack.OpenPhysics(isRight);
+            stack.OpenPhysics(!isRight?Vector3.forward: -Vector3.forward);
         }
         
 
         #endregion
 
         #region StackSetting
+
+        void FallNewStack()
+        {
+            NewStack.OpenPhysics(Vector3.zero);
+            
+        }
 
         void PerfectPlacementForNewStack()
         {
