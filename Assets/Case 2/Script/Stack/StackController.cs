@@ -1,3 +1,4 @@
+using Palmmedia.ReportGenerator.Core.Parser;
 using UnityEngine;
 
 namespace Case_2
@@ -7,15 +8,16 @@ namespace Case_2
         #region Variable
 
         public bool IsMovementOpen { get; set; } = false;
-        public MeshRenderer MeshRenderer=>meshRenderer;
-        
+       // public MeshRenderer MeshRenderer=>meshRenderer;
+        public float XBoundsSize => meshRenderer.bounds.size.x;
+        public float ZBoundsSize => meshRenderer.bounds.size.z;
         [Header("Definitions")] 
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] private Rigidbody rigidbody;
         
         
         
-        private float movementSpeed=2f;
+        private float movementSpeed=>GameManager.Instance.GameData.StackMovementSpeed;
         private bool movingRight;
         #endregion
     

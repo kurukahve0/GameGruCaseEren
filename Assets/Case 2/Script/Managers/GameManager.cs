@@ -12,7 +12,8 @@ namespace Case_2
 
         [Header("Definitions")] 
         [SerializeField] private GameCanvasController gameCanvas;
-        
+
+        [SerializeField] private ChibiController chibiController;
         public GameData GameData;
       
         public bool IsGameStart => isGameStart;
@@ -74,11 +75,23 @@ namespace Case_2
             gameCanvas.StartTextOpening = false;
             IsStackCreateOpen = true;
             isGameStart = true;
-            LevelManager.Instance.ActiveStackCreator.CreateNewStack();
-
+           // LevelManager.Instance.ActiveStackCreator.CreateNewStack();
+            chibiController.IsMovementOpen = true;
         }
+        
+        
 
 
+        
+
+        #endregion
+
+        #region Stack
+
+        public void CreateStackOpen()
+        {
+            LevelManager.Instance.ActiveStackCreator.CreateNewStack();
+        }
         
 
         #endregion

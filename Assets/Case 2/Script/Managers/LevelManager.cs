@@ -17,6 +17,10 @@ namespace Case_2
 
         private Vector3 levelFirstPosition = new Vector3(0, -.5f, 5f);
 
+        public Transform LastStackTransform => ActiveStackCreator.activeStacks[^1].transform;
+        public StackController NewStack => ActiveStackCreator.NewStack;
+ 
+
         #endregion
     
         #region MonoBehaviour

@@ -14,3 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LevelPrefab: {fileID: 172085550619571454, guid: 53aa48f057ffba24bbcef556abcf04ed, type: 3}
   StackPrefab: {fileID: 5469963244021290294, guid: 276bcfb02afbf024e91f99dc3500f0e9, type: 3}
+  CreateXPositions:
+  - -2.5
+  - 2.5
+  StackBaseScale: {x: 2.778142, y: 0.9654673, z: 2.67322}
+  StackMovementSpeed: 3
+  ChibiMovementSpeed: 1.75
+  ChibiXLerpSpeed: 2.5
+  ChibiCreateStackTriggerDistance: 2
