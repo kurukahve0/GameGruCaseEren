@@ -9,6 +9,7 @@ namespace Case_2
     {
         #region Variable
 
+        private GameState currentGameState;
         #endregion
 
         #region MonoBehaviour
@@ -28,14 +29,19 @@ namespace Case_2
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if (GameManager.Instance.CurrentState==GameState.GameCreateState || GameManager.Instance.CurrentState==GameState.GameRestartState )
+                if (currentGameState==GameState.GameCreateState 
+                    || currentGameState==GameState.GameRestartState)
                 {
                     GameManager.Instance.UpdateState(GameState.GameStartState);
                 }
-                else if (GameManager.Instance.CurrentState == GameState.GameStartState)
+                else if (currentGameState == GameState.GameStartState)
                 {
                     if(GameManager.Instance.IsStackCreateOpen)
-                        LevelManager.Instance.ActiveStackCreator.CreateStack();
+                        LevelManager.Instance.CreateStack();
+                }else if (currentGameState == GameState.GameNexLevelState)
+                {
+                    GameManager.Instance.UpdateState(GameState.GameCreateState);
+                    GameManager.Instance.UpdateState(GameState.GameStartState);
                 }
             }
         }
@@ -46,7 +52,7 @@ namespace Case_2
 
         void GameSateListener(GameState satate)
         {
-
+            currentGameState = satate;
         }
         
 

@@ -11,6 +11,14 @@ namespace Case_2
        // public MeshRenderer MeshRenderer=>meshRenderer;
         public float XBoundsSize => meshRenderer.bounds.size.x;
         public float ZBoundsSize => meshRenderer.bounds.size.z;
+
+        public Material Material
+        {
+            set => meshRenderer.material = value;
+
+            get => meshRenderer.material;
+        }
+        
         [Header("Definitions")] 
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] private Rigidbody rigidbody;

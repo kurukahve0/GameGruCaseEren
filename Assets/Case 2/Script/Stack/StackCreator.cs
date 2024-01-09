@@ -12,15 +12,30 @@ namespace Case_2
         #region Variable
 
         [SerializeField] private Transform stackParent;
+        [SerializeField] private Transform finishLineTransform;
         public List<StackController> activeStacks;
-        private float zDistance => activeStacks[^1].transform.localPosition.z + activeStacks[^1].ZBoundsSize/ 2;
         public StackController NewStack { get; private set; }
+
+        public Transform FinishLineTransform => finishLineTransform;
+        private float zDistance => activeStacks[^1].transform.localPosition.z + activeStacks[^1].ZBoundsSize/ 2;
+
+        private int materialCounter;
+
+        #endregion
+
+        #region MonoBehaviour
+
+        private void Start()
+        {
+            SetStackMaterial(activeStacks[0]);
+            materialCounter++;
+        }
 
         #endregion
         
         #region StackCreate
 
-        public void CreateStack()
+        public void CreateStackPiece()
         {
             if(!NewStack)
                 return;
@@ -37,10 +52,10 @@ namespace Case_2
             
             if (distanceStacks > xBackSize )
             {
-                Debug.Log("distanceStacks "+distanceStacks+  " xBackSize / 2f "+ xBackSize );
+                //Debug.Log("distanceStacks "+distanceStacks+  " xBackSize / 2f "+ xBackSize );
                 FallNewStack();
             }
-            else if (distanceStacks<.3f) // toleranslı yerleştirme
+            else if (distanceStacks<GameManager.Instance.GameData.StacekCreateTolerance) // toleranslı yerleştirme
             {
                 PerfectPlacementForNewStack();
             }
@@ -49,13 +64,13 @@ namespace Case_2
                 CreateTrashStackPiece(xBackSize, xFrontSize, distanceStacks, isRight);
                 CreateNecessaryStackPiece(xBackSize, distanceStacks, isRight);
             }
-            
+            materialCounter++;
+           
         }
 
 
-        public void CreateNewStack()
+        public void CreateFullPieceStack()
         {
-  
             NewStack = Instantiate(GameManager.Instance.GameData.StackPrefab, stackParent);
             Vector3 stackPosition = Vector3.zero;
             stackPosition.z =  zDistance+NewStack.ZBoundsSize / 2;
@@ -64,6 +79,7 @@ namespace Case_2
             NewStack.transform.localScale = GetNewStackScale();
             //activeStacks.Add(newStack);
             NewStack.IsMovementOpen = true;
+            SetStackMaterial(NewStack);
         }
 
         void CreateNecessaryStackPiece(float xBackSize, float distanceStacks, bool isRight)
@@ -73,27 +89,31 @@ namespace Case_2
             int factor = isRight ? 1 : -1; // sağsol pozisyon ayarlamak için
 
             var stack = Instantiate(GameManager.Instance.GameData.StackPrefab, stackParent);
-            Vector3 stackPosition = activeStacks[^1].transform.localPosition;
+            // bir önceki stacke göre boyut ayarlama
+            Vector3 stackPosition = activeStacks[^1].transform.localPosition; 
             stackPosition.z = zDistance+stack.ZBoundsSize / 2;
             stackPosition.x = activeStacks[^1].transform.localPosition.x + factor * distanceStacks / 2f;
             stack.transform.localPosition = stackPosition;
             stack.transform.localScale = new Vector3(xBackSize - distanceStacks, stack.transform.localScale.y,
                 stack.transform.localScale.z);
             activeStacks.Add(stack);
+            SetStackMaterial(stack);
+            SoundManager.Instance.PlaySound(SoundType.CutSound,false);
         }
 
         void CreateTrashStackPiece(float xBackSize, float xFrontSize, float distanceStacks, bool isRight)
         {
             int factor = isRight ? 1 : -1; // sağsol pozisyon ayarlamak için
             var stack = Instantiate(GameManager.Instance.GameData.StackPrefab, stackParent);
-            Vector3 stackPosition = activeStacks[^1].transform.localPosition;
+                // bir önceki stacke göre boyut ayarlama
+            Vector3 stackPosition = activeStacks[^1].transform.localPosition; 
             stackPosition.z = zDistance+stack.ZBoundsSize/ 2;
             stackPosition.x = activeStacks[^1].transform.localPosition.x + factor * xFrontSize / 2 +
                               factor * distanceStacks / 2f;
             stack.transform.localPosition = stackPosition;
             stack.transform.localScale = new Vector3(xFrontSize - (xBackSize - distanceStacks),
                 stack.transform.localScale.y, stack.transform.localScale.z);
-            
+            SetStackMaterial(stack);
             stack.OpenPhysics(!isRight?Vector3.forward: -Vector3.forward);
         }
         
@@ -116,7 +136,7 @@ namespace Case_2
             activeStacks.Add(NewStack);
             NewStack.IsMovementOpen = false;
             NewStack = null;
-            
+            SoundManager.Instance.PlaySound(SoundType.CutSound,true);
         }
         
         void RemoveNewStack()
@@ -135,6 +155,14 @@ namespace Case_2
             }
 
             return scale;
+        }
+
+        void SetStackMaterial(StackController stack)
+        {
+            stack.Material =
+                GameManager.Instance.GameData.stackMaterial[
+                    materialCounter ];
+           
         }
     }
 

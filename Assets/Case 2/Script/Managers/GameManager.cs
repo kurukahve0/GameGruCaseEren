@@ -11,15 +11,18 @@ namespace Case_2
     {
         #region Variable
 
-        [Header("Definitions")] 
-        [SerializeField] private GameCanvasController gameCanvas;
+        [Header("Definitions")] [SerializeField]
+        private GameCanvasController gameCanvas;
 
         [SerializeField] private ChibiController chibiController;
         public GameData GameData;
-      
+
         public bool IsGameStart => isGameStart;
         private bool isGameStart;
 
+        public int Level => level;
+        private int level;
+       
 
         public bool IsStackCreateOpen { get; set; } = false;
 
@@ -29,7 +32,7 @@ namespace Case_2
         public static event Action<GameState> OnGameStateChange;
 
         #endregion
-    
+
         #region MonoBehaviour
 
         void Start()
@@ -37,13 +40,11 @@ namespace Case_2
             UpdateState(GameState.GameCreateState);
         }
 
-
-
         #endregion
-        
+
 
         #region State
-        
+
         public void UpdateState(GameState state)
         {
             CurrentState = state;
@@ -56,30 +57,32 @@ namespace Case_2
                 case GameState.GameStartState:
                     GameStartState();
                     break;
-                    case GameState.GameOverState:
-                        GameOverState();
-                        break;
-                        
+                case GameState.GameOverState:
+                    GameOverState();
+                    break;
+                case GameState.GameFinalState:
+                    GameWinState();
+                    break;
+                case GameState.GameFinalActionState:
+                    break;
+                    
             }
-            
+
             OnGameStateChange?.Invoke(state);
-    
         }
 
 
         void GameCreateState()
         {
-           // LevelManager.Instance.CreateLevel();
-         //   UpdateState(GameState.GameStartState);
+            // LevelManager.Instance.CreateLevel();
+            //   UpdateState(GameState.GameStartState);
         }
 
         void GameStartState()
         {
-          
             IsStackCreateOpen = true;
             isGameStart = true;
-           // LevelManager.Instance.ActiveStackCreator.CreateNewStack();
-            
+            // LevelManager.Instance.ActiveStackCreator.CreateNewStack();
         }
 
 
@@ -90,7 +93,13 @@ namespace Case_2
                 .AppendCallback(() => UpdateState(GameState.GameRestartState));
         }
 
-        
+        void GameWinState()
+        {
+            level++;
+            DOTween.Sequence()
+                .AppendInterval(5f)
+                .AppendCallback(() => UpdateState(GameState.GameNexLevelState));
+        }
 
         #endregion
 
@@ -98,20 +107,11 @@ namespace Case_2
 
         public void CreateStackOpen()
         {
-            LevelManager.Instance.ActiveStackCreator.CreateNewStack();
+            LevelManager.Instance.CreateNewStack();
         }
-        
 
         #endregion
     }
 
-
-    public enum GameState
-    {
-        GameCreateState,
-        GameStartState,
-        GameOverState,
-        GameRestartState
-        
-    }
+    
 }

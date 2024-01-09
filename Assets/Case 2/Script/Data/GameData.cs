@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Case_2.Script.Level;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -10,6 +11,8 @@ namespace Case_2.Data
         [Space(10)]
         [Header("Level")]
         public LevelController LevelPrefab;
+
+        public float levelLenght;
         
         
         [Space(10)]
@@ -18,13 +21,22 @@ namespace Case_2.Data
         public float[] CreateXPositions = new float [2] { -2.5f, 2.5f };
         public Vector3 StackBaseScale;
         public float StackMovementSpeed;
-        
+        public float StacekCreateTolerance;
+        public List<Material> stackMaterial;
         
         [Space(10)] 
         [Header("Chibi")] 
         public float ChibiMovementSpeed;
         public float ChibiXLerpSpeed;
-       public float ChibiCreateStackTriggerDistance;
+        public float ChibiCreateStackTriggerDistance;
+
+        [Space(10)] 
+        [Header("Game Sound")] 
+        public List<SoundData> SoundData; // fazla ses eklenmesi durumunda
+
+
+
+
 
     }
 }

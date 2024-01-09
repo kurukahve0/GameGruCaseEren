@@ -82,21 +82,12 @@ namespace Case_2
             }
             
         }
-
-        void ChibiFall()
-        {
-           
-           
-           DOTween.Sequence()
-               .Append(transform.DOJump(transform.position + Vector3.forward*1.25f, .25f, 1, .45f))
-               .Append(transform.DOMoveY(transform.position.y - 10f,1f).SetEase(Ease.InSine));
-        }
         
         private void GameSateListener(GameState gameState)
         {
-            if (gameState==GameState.GameCreateState || gameState==GameState.GameRestartState)
+            if (gameState==GameState.GameCreateState)
             {
-                transform.position = startPosition;
+               // transform.position = GetStartPosition();
                 chibiAnimator.SetTrigger("Idle");
             }else if (gameState==GameState.GameStartState)
             {
@@ -106,10 +97,53 @@ namespace Case_2
             {
                 isMovementOpen = false;
                 chibiAnimator.SetTrigger("Fall");
+            }else if (gameState==GameState.GameFinalState)
+            {
+                isMovementOpen = false;
+                ChibiWin();
+            }else if (gameState==GameState.GameRestartState)
+            {
+                transform.position = startPosition;
+                chibiAnimator.SetTrigger("Idle");
             }
         }
-    
+
+        private Vector3 GetStartPosition()
+        {
+            Vector3 newStartPosition=startPosition;
+            float levelFactor = GameManager.Instance.GameData.levelLenght * GameManager.Instance.Level;
+            newStartPosition.z += levelFactor;
+            return newStartPosition;
+        }
+        
+        #endregion
+
+        #region ChibiAction
+
+        void ChibiFall()
+        {
+            DOTween.Sequence()
+                .Append(transform.DOJump(transform.position + Vector3.forward*1.25f, .25f, 1, .45f))
+                .Append(transform.DOMoveY(transform.position.y - 10f,1f).SetEase(Ease.InSine));
+        }
+
+        void ChibiWin()
+        {
+            DOTween.Sequence()
+                .Append(
+                    transform.DOMoveZ(LevelManager.Instance.ActiveStackCreator.FinishLineTransform.position.z, 1))
+                .AppendCallback(() =>
+                {
+                    chibiAnimator.SetTrigger("Dance");
+                    GameManager.Instance.UpdateState(GameState.GameFinalActionState);
+                });
+        }
+        
 
         #endregion
+
+    
+
+      
     }
 }

@@ -11,7 +11,7 @@ namespace Case_2
         #region Variable
 
         [SerializeField] private Transform levelsParent;
-        
+
         public List<LevelController> activeLevels;
         public StackCreator ActiveStackCreator { get; private set; }
 
@@ -19,10 +19,9 @@ namespace Case_2
 
         public StackController LastStack => ActiveStackCreator.activeStacks[^1];
         public StackController NewStack => ActiveStackCreator.NewStack;
- 
 
         #endregion
-    
+
         #region MonoBehaviour
 
         private void OnEnable()
@@ -34,24 +33,40 @@ namespace Case_2
         {
             GameManager.OnGameStateChange -= GameSateListener;
         }
-        
-        
+
+
         void Start()
         {
-           // SetActiveStack();
+            // SetActiveStack();
             //CreateLevel();
         }
-        
 
         #endregion
-    
+
         #region Func
+
+        public void CreateStack()
+        {
+            ActiveStackCreator.CreateStackPiece();
+        }
+
+        public void CreateNewStack()
+        {
+            if (ActiveStackCreator.activeStacks.Count < 10)
+            {
+                ActiveStackCreator.CreateFullPieceStack();
+            }
+            else
+            {
+                GameManager.Instance.UpdateState(GameState.GameFinalState);
+            }
+        }
 
         public void CreateLevel()
         {
-            var level = Instantiate(GameManager.Instance.GameData.LevelPrefab,levelsParent);
+            var level = Instantiate(GameManager.Instance.GameData.LevelPrefab, levelsParent);
             Vector3 levelPosition = levelFirstPosition;
-            levelPosition.z += activeLevels.Count * 10f; //TODO değişecek
+            levelPosition.z += activeLevels.Count * GameManager.Instance.GameData.levelLenght; //TODO değişecek
             level.transform.localPosition = levelPosition;
             activeLevels.Add(level);
             SetActiveStackCreator();
@@ -64,17 +79,17 @@ namespace Case_2
 
         void GameSateListener(GameState currentState)
         {
-            if (currentState==GameState.GameCreateState)
+            if (currentState == GameState.GameCreateState)
             {
                 CreateLevel();
-            }else if (currentState==GameState.GameRestartState)
+            }
+            else if (currentState == GameState.GameRestartState)
             {
-                activeLevels.ForEach(x=>Destroy(x.gameObject));
+                activeLevels.ForEach(x => Destroy(x.gameObject));
                 activeLevels.Clear();
                 CreateLevel();
             }
         }
-    
 
         #endregion
     }
