@@ -8,11 +8,13 @@ namespace Case_2
     public class LevelManager : Singleton<LevelManager>
     {
         #region Variable
+
+        public bool IsStackCreateOpen { get; set; }
         
         public List<LevelController> activeLevels;
         public LevelController ActiveLevels { get; private set; }
         public StackController LastStack => ActiveLevels.activeStacks[^1];
-        public StackController NewStack => ActiveLevels.NewStack;
+        StackController NewStack => ActiveLevels.NewStack;
 
         private Vector3 levelFirstPosition = new Vector3(0, -.5f, 5f);
         private GameData GameData => GameManager.Instance.GameData;
@@ -32,24 +34,28 @@ namespace Case_2
         {
             GameManager.OnGameStateChange -= GameSateListener;
         }
-
-
-        void Start()
-        {
-            // SetActiveStack();
-            //CreateLevel();
-        }
-
+        
         #endregion
 
         #region Func
+        
+        public void CreateStackOpen()
+        {
+            if(NewStack)
+                return;
+            
+            IsStackCreateOpen=true;
+            CreateNewStack();
+        }
 
         public void CreateStack()
         {
+            if(!IsStackCreateOpen)
+                return;
             ActiveLevels.CreateStackPiece();
         }
 
-        public void CreateNewStack()
+        void CreateNewStack()
         {
             if (ActiveLevels.activeStacks.Count < 10)
             {
@@ -61,7 +67,7 @@ namespace Case_2
             }
         }
 
-        public void CreateLevel()
+        void CreateLevel()
         {
             var level = Instantiate(GameData.LevelPrefab, levelsParent);
             Vector3 levelPosition = levelFirstPosition;
@@ -81,6 +87,7 @@ namespace Case_2
             if (currentState == GameState.GameCreateState)
             {
                 CreateLevel();
+                IsStackCreateOpen = true;
             }
             else if (currentState == GameState.GameRestartState)
             {

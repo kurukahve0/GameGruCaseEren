@@ -15,7 +15,7 @@ namespace Case_2
         public static event Action<GameState> OnGameStateChange;
         public GameData GameData=> gameData;
         public int Level => level;
-        public bool IsStackCreateOpen { get; set; } = false;
+
         public GameState CurrentState { get; private set; }
         
         private int level;
@@ -37,15 +37,12 @@ namespace Case_2
 
         #region State
 
-        public void UpdateState(GameState state)
+        public void UpdateState(GameState state) // Oyun akış kontrolü
         {
             CurrentState = state;
 
             switch (state)
             {
-                case GameState.GameStartState:
-                    GameStartState();
-                    break;
                 case GameState.GameOverState:
                     GameOverState();
                     break;
@@ -59,10 +56,6 @@ namespace Case_2
         }
         
 
-        void GameStartState()
-        {
-            IsStackCreateOpen = true;
-        }
 
 
         void GameOverState()
@@ -81,16 +74,7 @@ namespace Case_2
         }
 
         #endregion
-
-        #region Stack
-
-        public void CreateStackOpen()
-        {
-            IsStackCreateOpen=true;
-            LevelManager.Instance.CreateNewStack();
-        }
-
-        #endregion
+        
     }
 
     

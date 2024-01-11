@@ -1,8 +1,6 @@
-using System;
 using Case_2.Data;
 using Lean.Pool;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Case_2
 {
@@ -13,13 +11,6 @@ namespace Case_2
         public bool IsMovementOpen { get; set; } = false;
         public float XBoundsSize => meshRendererStack.bounds.size.x;
         public float ZBoundsSize => meshRendererStack.bounds.size.z;
-
-        public Material Material
-        {
-            set => meshRendererStack.material = value;
-
-            get => meshRendererStack.material;
-        }
         
         private GameData GameData => GameManager.Instance.GameData;
         private float movementSpeed=>GameData.StackMovementSpeed;
@@ -30,19 +21,10 @@ namespace Case_2
         [SerializeField] private MeshRenderer meshRendererStack;
         [SerializeField] private Rigidbody rigidbodyStack;
         
-       
-        
-        
-        
         #endregion
     
         #region MonoBehaviour
-
-        private void Start()
-        {
-            
-        }
-
+        
         void Update()
         {
             UpdateObjectPosition();
@@ -79,6 +61,13 @@ namespace Case_2
             LeanPool.Despawn(gameObject,2f);
         }
 
+        public void SetStackData(StackData stackData)
+        {
+            transform.localPosition = stackData.LocalPosition;
+            transform.localScale = stackData.LocalScale;
+            meshRendererStack.material = stackData.Material;
+        }
+
 
         #endregion
 
@@ -96,5 +85,7 @@ namespace Case_2
         }
 
         #endregion
+
+
     }
 }

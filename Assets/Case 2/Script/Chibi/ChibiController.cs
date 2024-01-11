@@ -10,16 +10,17 @@ namespace Case_2
     {
         #region Variable
         
-        [SerializeField] private Animator chibiAnimator;
-        
-        
-        public bool isMovementOpen = false;
         private float moveSpeed => GameManager.Instance.GameData.ChibiMovementSpeed; 
         private float lerpSpeed => GameManager.Instance.GameData.ChibiXLerpSpeed; 
         private float stackCreateTiggerDistance => GameManager.Instance.GameData.ChibiCreateStackTriggerDistance;
-    
-        // Start
+        
         private Vector3 startPosition;
+        
+        private bool isMovementOpen  = false;
+        
+        [Header("Definitions")] 
+        [SerializeField] private Animator chibiAnimator;
+        
         #endregion
     
         #region MonoBehaviour
@@ -27,10 +28,6 @@ namespace Case_2
         private void OnEnable()
         {
             GameManager.OnGameStateChange += GameSateListener;
-        }
-
-        private void Start()
-        {
             startPosition = transform.position;
         }
 
@@ -71,12 +68,11 @@ namespace Case_2
             float distance = targetZ - transform.position.z;
             float frontLimit = targetZ + LevelManager.Instance.LastStack.ZBoundsSize / 2;
             
-            if (!LevelManager.Instance.NewStack && distance<stackCreateTiggerDistance)
+            if ( distance<stackCreateTiggerDistance) // belli bir mesafen sonra stack yaratır
             {
-                Debug.Log("createee");
-                GameManager.Instance.CreateStackOpen();
+                LevelManager.Instance.CreateStackOpen();
             }
-            else if (transform.position.z-frontLimit>0)
+            if (transform.position.z-frontLimit>0)
             {
                 GameManager.Instance.UpdateState(GameState.GameOverState);
                 ChibiFall();
@@ -84,38 +80,33 @@ namespace Case_2
             
         }
         
+        
         private void GameSateListener(GameState gameState)
         {
-            if (gameState==GameState.GameCreateState)
+            switch (gameState)
             {
-               // transform.position = GetStartPosition();
-                chibiAnimator.SetTrigger("Idle");
-            }else if (gameState==GameState.GameStartState)
-            {
-                isMovementOpen = true;
-                chibiAnimator.SetTrigger("Run");
-            }else if (gameState==GameState.GameOverState)
-            {
-                isMovementOpen = false;
-                chibiAnimator.SetTrigger("Fall");
-            }else if (gameState==GameState.GameFinalState)
-            {
-                isMovementOpen = false;
-                ChibiWin();
-            }else if (gameState==GameState.GameRestartState)
-            {
-                transform.position = startPosition;
-                chibiAnimator.SetTrigger("Idle");
+                case GameState.GameCreateState:
+                    chibiAnimator.SetTrigger("Idle");
+                    break;
+                case GameState.GameStartState:
+                    isMovementOpen = true;
+                    chibiAnimator.SetTrigger("Run");
+                    break;
+                case GameState.GameOverState:
+                    isMovementOpen = false;
+                    chibiAnimator.SetTrigger("Fall");
+                    break;
+                case GameState.GameFinalState:
+                    isMovementOpen = false;
+                    ChibiWin();
+                    break;
+                case GameState.GameRestartState:
+                    transform.position = startPosition;
+                    chibiAnimator.SetTrigger("Idle");
+                    break;
             }
         }
-
-        private Vector3 GetStartPosition()
-        {
-            Vector3 newStartPosition=startPosition;
-            float levelFactor = GameManager.Instance.GameData.LevelLenght * GameManager.Instance.Level;
-            newStartPosition.z += levelFactor;
-            return newStartPosition;
-        }
+        
         
         #endregion
 

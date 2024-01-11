@@ -11,7 +11,6 @@ namespace Case_2
         [SerializeField] private GameObject gameOveText;
         [SerializeField] private GameObject winText;
         
-        private Tween scaleTween;
 
         private void OnEnable()
         {
@@ -25,33 +24,32 @@ namespace Case_2
 
         void GameSateListener(GameState currentState)
         {
-            if (currentState == GameState.GameCreateState || currentState == GameState.GameRestartState)
+            switch (currentState)
             {
-                TextScaleAnimation(tapToStartText.transform, true);
-                TextScaleAnimation(gameOveText.transform, false);
-                TextScaleAnimation(winText.transform, false);
-            }
-            else if (currentState == GameState.GameStartState)
-            {
-                TextScaleAnimation(tapToStartText.transform, false);
-            }
-            else if (currentState == GameState.GameOverState)
-            {
-                TextScaleAnimation(gameOveText.transform, true);
-            }else if (currentState == GameState.GameFinalActionState)
-            {
-                TextScaleAnimation(winText.transform, true);
-            }else if (currentState == GameState.GameNexLevelState)
-            {
-                TextScaleAnimation(tapToStartText.transform, true);
-            }
+                case GameState.GameCreateState:
+                case GameState.GameRestartState:
+                    TextScaleAnimation(tapToStartText.transform, true);
+                    TextScaleAnimation(gameOveText.transform, false);
+                    TextScaleAnimation(winText.transform, false);
+                    break;
 
-          
-   
+                case GameState.GameStartState:
+                    TextScaleAnimation(tapToStartText.transform, false);
+                    break;
 
+                case GameState.GameOverState:
+                    TextScaleAnimation(gameOveText.transform, true);
+                    break;
 
-            // tapToStartText.SetActive(currentState== GameState.GameCreateState);
-            //  gameOveText.SetActive(currentState== GameState.GameOverState);
+                case GameState.GameFinalActionState:
+                    TextScaleAnimation(winText.transform, true);
+                    break;
+
+                case GameState.GameNexLevelState:
+                    TextScaleAnimation(tapToStartText.transform, true);
+                    break;
+            }
+            
         }
 
 
@@ -64,13 +62,12 @@ namespace Case_2
                 {
                     textTransform.gameObject.SetActive(true);
                     textTransform.localScale = Vector3.zero;
-                    scaleTween =  textTransform.DOScale(Vector3.one, .6f).SetEase(Ease.OutBack);
+                    textTransform.DOScale(Vector3.one, .6f).SetEase(Ease.OutBack);
                 }
               
             }
             else
             {
-                //textTransform.gameObject.SetActive(false);
                 textTransform.DOScale(Vector3.zero, .6f).SetEase(Ease.InBack).OnComplete(() => textTransform.gameObject.SetActive(false));
 
             }

@@ -1,6 +1,7 @@
 using System;
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Case_2
 {
@@ -11,8 +12,9 @@ namespace Case_2
         private float rotateSpeed=50f;
         private Vector3 startRotation;
         
+        [FormerlySerializedAs("virtualCamera")]
         [Header("Definitions")] 
-        [SerializeField] CinemachineVirtualCamera virtualCamera;
+        [SerializeField] CinemachineVirtualCamera finalVcam;
         [SerializeField] private Transform chibiTransform;
         
         private void OnEnable()
@@ -45,12 +47,12 @@ namespace Case_2
             {
                 transform.eulerAngles = startRotation;
                 isRotateOpen = true;
-                virtualCamera.Priority = 11;
+                finalVcam.Priority = 11;
                 transform.position = chibiTransform.transform.position;
             }
             else if(currentState==GameState.GameStartState)
             {
-                virtualCamera.Priority = 9;
+                finalVcam.Priority = 9;
                 isRotateOpen = false;
              //   
             }

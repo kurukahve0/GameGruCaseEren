@@ -37,10 +37,9 @@ namespace Case_2
                 }
                 else if (currentGameState == GameState.GameStartState)
                 {
-                    if( GameManager.Instance.IsStackCreateOpen)
                         LevelManager.Instance.CreateStack();
-                    
-                }else if (currentGameState == GameState.GameNexLevelState)
+                }
+                else if (currentGameState == GameState.GameNexLevelState)
                 {
                     GameManager.Instance.UpdateState(GameState.GameCreateState);
                     GameManager.Instance.UpdateState(GameState.GameStartState);

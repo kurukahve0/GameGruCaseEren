@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Game Data
   m_EditorClassIdentifier: 
   LevelPrefab: {fileID: 172085550619571454, guid: 53aa48f057ffba24bbcef556abcf04ed, type: 3}
-  levelLenght: 30.85
+  LevelLenght: 30.85
   StackPrefab: {fileID: 5469963244021290294, guid: 276bcfb02afbf024e91f99dc3500f0e9, type: 3}
   CreateXPositions:
   - -2.25
@@ -23,7 +23,6 @@ MonoBehaviour:
   StacekCreateTolerance: 0.15
   stackMaterial:
   - {fileID: 2100000, guid: 5b25cd95e3901d24f89b00fa0a88cf4c, type: 2}
-  - {fileID: 2100000, guid: d1e7205df0c8b0142bf4385f4199ab2c, type: 2}
   - {fileID: 2100000, guid: a3f65138ba8a675438e7191cd4351bfe, type: 2}
   - {fileID: 2100000, guid: 98bc5af520a7f624783cdfc4c1c5bcca, type: 2}
   - {fileID: 2100000, guid: f48468e12d711ee4da62cf65f8254ad2, type: 2}

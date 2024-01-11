@@ -8,28 +8,21 @@ namespace Case_2
     public class LevelController : MonoBehaviour
     {
         #region Variable
-        
+
         public StackController NewStack { get; private set; }
-        
+
         public List<StackController> activeStacks;
+
         public Transform FinishLineTransform => finishLineTransform;
-        private float zDistance => activeStacks[^1].transform.localPosition.z + activeStacks[^1].ZBoundsSize / 2;
+
+        // iki stack arasındaki z pozisyon farkı
+        private float ZDistance => activeStacks[^1].transform.localPosition.z + activeStacks[^1].ZBoundsSize / 2;
         private GameData GameData => GameManager.Instance.GameData;
-        
+
         private int materialCounter;
-        
-        [Header("Definitions")] 
-        [SerializeField] private Transform finishLineTransform;
 
-        #endregion
-
-        #region MonoBehaviour
-
-        private void Start()
-        {
-            SetStackMaterial(activeStacks[0]);
-            materialCounter++;
-        }
+        [Header("Definitions")] [SerializeField]
+        private Transform finishLineTransform;
 
         #endregion
 
@@ -59,28 +52,26 @@ namespace Case_2
             {
                 PerfectPlacementForNewStack();
             }
-            else 
+            else // iki farklı stack durumu
             {
                 CreateTrashStackPiece(xBackSize, xFrontSize, distanceStacks, isRight);
                 CreateNecessaryStackPiece(xBackSize, distanceStacks, isRight);
             }
 
             materialCounter++;
-            GameManager.Instance.IsStackCreateOpen=false;
+            LevelManager.Instance.IsStackCreateOpen = false;
         }
 
 
         public void CreateFullPieceStack()
         {
-            NewStack = LeanPool.Spawn(GameData.StackPrefab.gameObject, transform).GetComponent<StackController>();
+            NewStack = LeanPool.Spawn(GameData.StackPrefab, transform);
             Vector3 stackPosition = Vector3.zero;
-            stackPosition.z = zDistance + NewStack.ZBoundsSize / 2;
+            stackPosition.z = ZDistance + NewStack.ZBoundsSize / 2;
             stackPosition.x = GameData.CreateXPositions[Random.Range(0, 2)];
-            NewStack.transform.localPosition = stackPosition;
-            NewStack.transform.localScale = GetNewStackScale();
+            StackData transformData = new StackData(stackPosition, GetNewStackScale(), GetStackMaterial());
+            NewStack.SetStackData(transformData);
             NewStack.IsMovementOpen = true;
-            SetStackMaterial(NewStack);
-    
         }
 
         void CreateNecessaryStackPiece(float xBackSize, float distanceStacks, bool isRight)
@@ -89,35 +80,47 @@ namespace Case_2
 
             int factor = isRight ? 1 : -1; // sağsol pozisyon ayarlamak için
 
-            var stack = LeanPool.Spawn(GameData.StackPrefab.gameObject, transform).GetComponent<StackController>();
-            // bir önceki stacke göre boyut ayarlama
+            var stack = LeanPool.Spawn(GameData.StackPrefab, transform);
+            // bir önceki stacke göre boyut ve Pozisyon ayaralma
             Vector3 stackPosition = activeStacks[^1].transform.localPosition;
-            stackPosition.z = zDistance + stack.ZBoundsSize / 2;
-            stackPosition.x = activeStacks[^1].transform.localPosition.x + factor * distanceStacks / 2f;
-            stack.transform.localPosition = stackPosition;
-            stack.transform.localScale = new Vector3(xBackSize - distanceStacks, stack.transform.localScale.y,
-                stack.transform.localScale.z);
-            activeStacks.Add(stack);
-            SetStackMaterial(stack);
-            SoundManager.Instance.PlaySound(SoundType.CutSound, false);
+            stackPosition.z = ZDistance + stack.ZBoundsSize / 2;
+            stackPosition.x += factor * distanceStacks / 2f;
 
+            Vector3 stackScale = new Vector3(xBackSize - distanceStacks
+                , stack.transform.localScale.y
+                , stack.transform.localScale.z);
+
+            StackData transformData = new StackData(stackPosition, stackScale, GetStackMaterial());
+            stack.SetStackData(transformData);
+            activeStacks.Add(stack);
+            SoundManager.Instance.PlaySound(SoundType.CutSound, false);
         }
 
         void CreateTrashStackPiece(float xBackSize, float xFrontSize, float distanceStacks, bool isRight)
         {
             int factor = isRight ? 1 : -1; // sağsol pozisyon ayarlamak için
-            var stack = LeanPool.Spawn(GameData.StackPrefab.gameObject, transform).GetComponent<StackController>();
-            // bir önceki stacke göre boyut ayarlama
+            var stack = LeanPool.Spawn(GameData.StackPrefab, transform);
+            // stack parçasına göre boyut ve Pozisyon ayaralma
             Vector3 stackPosition = activeStacks[^1].transform.localPosition;
-            stackPosition.z = zDistance + stack.ZBoundsSize / 2;
-            stackPosition.x = activeStacks[^1].transform.localPosition.x + factor * xFrontSize / 2 +
-                              factor * distanceStacks / 2f;
-            stack.transform.localPosition = stackPosition;
-            stack.transform.localScale = new Vector3(xFrontSize - (xBackSize - distanceStacks),
+            stackPosition.z = ZDistance + stack.ZBoundsSize / 2;
+            stackPosition.x += factor * xFrontSize / 2 +
+                               factor * distanceStacks / 2f;
+            Vector3 stackScale = new Vector3(xFrontSize - (xBackSize - distanceStacks),
                 stack.transform.localScale.y, stack.transform.localScale.z);
-            SetStackMaterial(stack);
+            StackData transformData = new StackData(stackPosition, stackScale, GetStackMaterial());
+            stack.SetStackData(transformData);
             stack.OpenPhysics(!isRight ? Vector3.forward : -Vector3.forward);
-            
+        }
+
+        void PerfectPlacementForNewStack()
+        {
+            Vector3 perfectPositions = activeStacks[^1].transform.localPosition;
+            perfectPositions.z = ZDistance + NewStack.ZBoundsSize / 2;
+            NewStack.transform.localPosition = perfectPositions;
+            activeStacks.Add(NewStack);
+            NewStack.IsMovementOpen = false;
+            NewStack = null;
+            SoundManager.Instance.PlaySound(SoundType.CutSound, true);
         }
 
         #endregion
@@ -128,28 +131,18 @@ namespace Case_2
         {
             for (int i = 1; i < activeStacks.Count; i++)
             {
-                LeanPool.Despawn(activeStacks[i].gameObject);
+                LeanPool.Despawn(activeStacks[i]);
             }
-            if(NewStack)
-                LeanPool.Despawn(NewStack.gameObject);
+
+            if (NewStack)
+                LeanPool.Despawn(NewStack);
         }
 
         void FallNewStack()
         {
             NewStack.OpenPhysics(Vector3.zero);
-            NewStack = null;
         }
 
-        void PerfectPlacementForNewStack()
-        {
-            Vector3 perfectPositions = activeStacks[^1].transform.localPosition;
-            perfectPositions.z = zDistance + NewStack.ZBoundsSize / 2;
-            NewStack.transform.localPosition = perfectPositions;
-            activeStacks.Add(NewStack);
-            NewStack.IsMovementOpen = false;
-            NewStack = null;
-            SoundManager.Instance.PlaySound(SoundType.CutSound, true);
-        }
 
         void RemoveNewStack()
         {
@@ -169,11 +162,9 @@ namespace Case_2
             return scale;
         }
 
-        void SetStackMaterial(StackController stack)
+        Material GetStackMaterial()
         {
-            stack.Material =
-                GameData.stackMaterial[
-                    materialCounter];
+            return GameData.stackMaterial[materialCounter];
         }
 
         #endregion
