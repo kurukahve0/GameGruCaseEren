@@ -97,8 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67db35d8df24600bbdd2602ca3875d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshRenderer: {fileID: 4074783504112324906}
-  rigidbody: {fileID: 560887527305020839}
+  meshRendererStack: {fileID: 4074783504112324906}
+  rigidbodyStack: {fileID: 560887527305020839}
 --- !u!54 &560887527305020839
 Rigidbody:
   m_ObjectHideFlags: 0

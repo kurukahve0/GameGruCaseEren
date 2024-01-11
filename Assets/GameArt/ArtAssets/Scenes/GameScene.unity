@@ -1610,6 +1610,63 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 365154295}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &380436376
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 380436378}
+  - component: {fileID: 380436377}
+  m_Layer: 0
+  m_Name: LeanGameObjectPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &380436377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380436376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eea08375da243a441b88d1e6b0713006, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 4074783504112324909, guid: 276bcfb02afbf024e91f99dc3500f0e9, type: 3}
+  notification: 3
+  strategy: 0
+  preload: 10
+  capacity: 0
+  recycle: 0
+  persist: 0
+  stamp: 0
+  warnings: 1
+  spawnedClonesList: []
+  despawnedClones: []
+  delays: []
+  deactivatedChild: {fileID: 0}
+--- !u!4 &380436378
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380436376}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &486188060
 GameObject:
   m_ObjectHideFlags: 3
@@ -3401,7 +3458,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
-  m_Pitch: 0.6
+  m_Pitch: 0.8
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -4926,9 +4983,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce3741dd4ed84b1f82fbced2c85066f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameCanvas: {fileID: 121395176}
-  chibiController: {fileID: 1915247566}
-  GameData: {fileID: 11400000, guid: 57b54640cc03db245bc55d0916034ab0, type: 2}
+  gameData: {fileID: 11400000, guid: 57b54640cc03db245bc55d0916034ab0, type: 2}
 --- !u!114 &1227225474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4941,8 +4996,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e42b70e892455b95658a6200d53466, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelsParent: {fileID: 805988931}
   activeLevels: []
+  levelsParent: {fileID: 805988931}
 --- !u!4 &1227225475
 Transform:
   m_ObjectHideFlags: 0

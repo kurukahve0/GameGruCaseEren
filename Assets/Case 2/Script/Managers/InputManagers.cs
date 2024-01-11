@@ -10,6 +10,7 @@ namespace Case_2
         #region Variable
 
         private GameState currentGameState;
+        
         #endregion
 
         #region MonoBehaviour
@@ -36,8 +37,9 @@ namespace Case_2
                 }
                 else if (currentGameState == GameState.GameStartState)
                 {
-                    if(GameManager.Instance.IsStackCreateOpen)
+                    if( GameManager.Instance.IsStackCreateOpen)
                         LevelManager.Instance.CreateStack();
+                    
                 }else if (currentGameState == GameState.GameNexLevelState)
                 {
                     GameManager.Instance.UpdateState(GameState.GameCreateState);

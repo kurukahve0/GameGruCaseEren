@@ -6,11 +6,14 @@ namespace Case_2
 {
     public class FinalCameraController: MonoBehaviour
     {
-        [SerializeField] CinemachineVirtualCamera virtualCamera;
-        [SerializeField] private Transform chibiTransform;
+
         private bool isRotateOpen = false;
         private float rotateSpeed=50f;
         private Vector3 startRotation;
+        
+        [Header("Definitions")] 
+        [SerializeField] CinemachineVirtualCamera virtualCamera;
+        [SerializeField] private Transform chibiTransform;
         
         private void OnEnable()
         {

@@ -11,25 +11,17 @@ namespace Case_2
     {
         #region Variable
 
-        [Header("Definitions")] [SerializeField]
-        private GameCanvasController gameCanvas;
-
-        [SerializeField] private ChibiController chibiController;
-        public GameData GameData;
-
-        public bool IsGameStart => isGameStart;
-        private bool isGameStart;
-
-        public int Level => level;
-        private int level;
-       
-
-        public bool IsStackCreateOpen { get; set; } = false;
-
-        public GameState CurrentState { get; private set; }
-
         //Action
         public static event Action<GameState> OnGameStateChange;
+        public GameData GameData=> gameData;
+        public int Level => level;
+        public bool IsStackCreateOpen { get; set; } = false;
+        public GameState CurrentState { get; private set; }
+        
+        private int level;
+
+        [Header("Definitions")] 
+        [SerializeField] private GameData gameData;
 
         #endregion
 
@@ -51,9 +43,6 @@ namespace Case_2
 
             switch (state)
             {
-                case GameState.GameCreateState:
-                    GameCreateState();
-                    break;
                 case GameState.GameStartState:
                     GameStartState();
                     break;
@@ -63,26 +52,16 @@ namespace Case_2
                 case GameState.GameFinalState:
                     GameWinState();
                     break;
-                case GameState.GameFinalActionState:
-                    break;
                     
             }
 
             OnGameStateChange?.Invoke(state);
         }
-
-
-        void GameCreateState()
-        {
-            // LevelManager.Instance.CreateLevel();
-            //   UpdateState(GameState.GameStartState);
-        }
+        
 
         void GameStartState()
         {
             IsStackCreateOpen = true;
-            isGameStart = true;
-            // LevelManager.Instance.ActiveStackCreator.CreateNewStack();
         }
 
 
@@ -107,6 +86,7 @@ namespace Case_2
 
         public void CreateStackOpen()
         {
+            IsStackCreateOpen=true;
             LevelManager.Instance.CreateNewStack();
         }
 

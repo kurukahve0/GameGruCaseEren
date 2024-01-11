@@ -73,6 +73,7 @@ namespace Case_2
             
             if (!LevelManager.Instance.NewStack && distance<stackCreateTiggerDistance)
             {
+                Debug.Log("createee");
                 GameManager.Instance.CreateStackOpen();
             }
             else if (transform.position.z-frontLimit>0)
@@ -111,7 +112,7 @@ namespace Case_2
         private Vector3 GetStartPosition()
         {
             Vector3 newStartPosition=startPosition;
-            float levelFactor = GameManager.Instance.GameData.levelLenght * GameManager.Instance.Level;
+            float levelFactor = GameManager.Instance.GameData.LevelLenght * GameManager.Instance.Level;
             newStartPosition.z += levelFactor;
             return newStartPosition;
         }
@@ -131,7 +132,7 @@ namespace Case_2
         {
             DOTween.Sequence()
                 .Append(
-                    transform.DOMoveZ(LevelManager.Instance.ActiveStackCreator.FinishLineTransform.position.z, 1))
+                    transform.DOMoveZ(LevelManager.Instance.ActiveLevels.FinishLineTransform.position.z, 1))
                 .AppendCallback(() =>
                 {
                     chibiAnimator.SetTrigger("Dance");

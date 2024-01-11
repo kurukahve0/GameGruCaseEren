@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Case_1;
 using Case_2.Data;
-using Case_2.Script.Level;
 using UnityEngine;
 
 namespace Case_2
@@ -9,17 +8,17 @@ namespace Case_2
     public class LevelManager : Singleton<LevelManager>
     {
         #region Variable
-
-        [SerializeField] private Transform levelsParent;
-
+        
         public List<LevelController> activeLevels;
-        public StackCreator ActiveStackCreator { get; private set; }
+        public LevelController ActiveLevels { get; private set; }
+        public StackController LastStack => ActiveLevels.activeStacks[^1];
+        public StackController NewStack => ActiveLevels.NewStack;
 
         private Vector3 levelFirstPosition = new Vector3(0, -.5f, 5f);
-
-        public StackController LastStack => ActiveStackCreator.activeStacks[^1];
-        public StackController NewStack => ActiveStackCreator.NewStack;
-
+        private GameData GameData => GameManager.Instance.GameData;
+        
+        [Header("Definitions")] 
+        [SerializeField] private Transform levelsParent;
         #endregion
 
         #region MonoBehaviour
@@ -47,14 +46,14 @@ namespace Case_2
 
         public void CreateStack()
         {
-            ActiveStackCreator.CreateStackPiece();
+            ActiveLevels.CreateStackPiece();
         }
 
         public void CreateNewStack()
         {
-            if (ActiveStackCreator.activeStacks.Count < 10)
+            if (ActiveLevels.activeStacks.Count < 10)
             {
-                ActiveStackCreator.CreateFullPieceStack();
+                ActiveLevels.CreateFullPieceStack();
             }
             else
             {
@@ -64,17 +63,17 @@ namespace Case_2
 
         public void CreateLevel()
         {
-            var level = Instantiate(GameManager.Instance.GameData.LevelPrefab, levelsParent);
+            var level = Instantiate(GameData.LevelPrefab, levelsParent);
             Vector3 levelPosition = levelFirstPosition;
-            levelPosition.z += activeLevels.Count * GameManager.Instance.GameData.levelLenght; //TODO değişecek
+            levelPosition.z += activeLevels.Count * GameData.LevelLenght; //TODO değişecek
             level.transform.localPosition = levelPosition;
             activeLevels.Add(level);
-            SetActiveStackCreator();
+            SetActiveLevel();
         }
 
-        void SetActiveStackCreator()
+        void SetActiveLevel()
         {
-            ActiveStackCreator = activeLevels[^1].GetComponent<StackCreator>();
+            ActiveLevels = activeLevels[^1];
         }
 
         void GameSateListener(GameState currentState)
@@ -85,10 +84,19 @@ namespace Case_2
             }
             else if (currentState == GameState.GameRestartState)
             {
-                activeLevels.ForEach(x => Destroy(x.gameObject));
-                activeLevels.Clear();
-                CreateLevel();
+                ClearLevel();
             }
+        }
+
+        void ClearLevel()
+        {
+            foreach (var level in activeLevels)
+            {
+                level.ClearStacks();
+                Destroy(level.gameObject);
+            }
+            activeLevels.Clear();
+            CreateLevel();
         }
 
         #endregion

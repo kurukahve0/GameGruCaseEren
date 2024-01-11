@@ -1,39 +1,46 @@
-using Palmmedia.ReportGenerator.Core.Parser;
+using System;
+using Case_2.Data;
+using Lean.Pool;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Case_2
 {
-    public class StackController : MonoBehaviour
+    public class StackController : MonoBehaviour , IPoolable
     {
         #region Variable
 
         public bool IsMovementOpen { get; set; } = false;
-       // public MeshRenderer MeshRenderer=>meshRenderer;
-        public float XBoundsSize => meshRenderer.bounds.size.x;
-        public float ZBoundsSize => meshRenderer.bounds.size.z;
+        public float XBoundsSize => meshRendererStack.bounds.size.x;
+        public float ZBoundsSize => meshRendererStack.bounds.size.z;
 
         public Material Material
         {
-            set => meshRenderer.material = value;
+            set => meshRendererStack.material = value;
 
-            get => meshRenderer.material;
+            get => meshRendererStack.material;
         }
         
-        [Header("Definitions")] 
-        [SerializeField] private MeshRenderer meshRenderer;
-        [SerializeField] private Rigidbody rigidbody;
+        private GameData GameData => GameManager.Instance.GameData;
+        private float movementSpeed=>GameData.StackMovementSpeed;
         
-        
-        
-        private float movementSpeed=>GameManager.Instance.GameData.StackMovementSpeed;
         private bool movingRight;
+        
+        [Header("Definitions")] 
+        [SerializeField] private MeshRenderer meshRendererStack;
+        [SerializeField] private Rigidbody rigidbodyStack;
+        
+       
+        
+        
+        
         #endregion
     
         #region MonoBehaviour
 
-        void Start()
+        private void Start()
         {
-        
+            
         }
 
         void Update()
@@ -54,11 +61,11 @@ namespace Case_2
             
             transform.Translate((movingRight?Vector3.right: Vector3.left) * movement);
             
-            if (transform.position.x >=  GameManager.Instance.GameData.CreateXPositions[1])
+            if (transform.position.x >=  GameData.CreateXPositions[1])
             {
                 movingRight = false;
             }
-            else if (transform.position.x <=  GameManager.Instance.GameData.CreateXPositions[0])
+            else if (transform.position.x <=  GameData.CreateXPositions[0])
             {
                 movingRight = true;
             }
@@ -66,11 +73,27 @@ namespace Case_2
 
         public void OpenPhysics(Vector3 torqueDirection)
         {
-            rigidbody.isKinematic = false;
-            rigidbody.AddTorque((torqueDirection)*2f,ForceMode.Impulse);
+            rigidbodyStack.isKinematic = false;
+            rigidbodyStack.AddTorque((torqueDirection)*2f,ForceMode.Impulse);
+            IsMovementOpen = false;
+            LeanPool.Despawn(gameObject,2f);
+        }
+
+
+        #endregion
+
+        #region Pool
+
+        public void OnSpawn()
+        {
+            rigidbodyStack.isKinematic = true;
             IsMovementOpen = false;
         }
 
+        public void OnDespawn()
+        {
+
+        }
 
         #endregion
     }

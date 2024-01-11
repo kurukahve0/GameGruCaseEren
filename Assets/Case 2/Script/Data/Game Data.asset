@@ -37,4 +37,4 @@ MonoBehaviour:
   ChibiCreateStackTriggerDistance: 2
   SoundData:
   - SoundType: 0
-    AudioClip: {fileID: 8300000, guid: 2a0e462f09f864e4692e0b1c04732a52, type: 3}
+    AudioClip: {fileID: 8300000, guid: 6bf801a528878fd4c87285c21c59d8e7, type: 3}

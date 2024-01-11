@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Case_2.Script.Level;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -12,7 +11,7 @@ namespace Case_2.Data
         [Header("Level")]
         public LevelController LevelPrefab;
 
-        public float levelLenght;
+        public float LevelLenght=30.85f;
         
         
         [Space(10)]

@@ -1,8 +1,7 @@
 using System;
-using Case_2;
 using UnityEngine;
 
-namespace Case_2
+namespace Case_2.Data
 {
     [Serializable]
     public class SoundData
