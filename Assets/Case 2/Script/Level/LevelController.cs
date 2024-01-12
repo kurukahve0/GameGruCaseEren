@@ -134,7 +134,7 @@ namespace Case_2
                 LeanPool.Despawn(activeStacks[i]);
             }
 
-            if (NewStack)
+            if (NewStack!=null)
                 LeanPool.Despawn(NewStack);
         }
 
