@@ -12,9 +12,9 @@ namespace Case_2
         public bool IsStackCreateOpen { get; set; }
         
         public List<LevelController> activeLevels;
-        public LevelController ActiveLevels { get; private set; }
-        public StackController LastStack => ActiveLevels.activeStacks[^1];
-        StackController NewStack => ActiveLevels.NewStack;
+        public LevelController ActiveLevel { get; private set; }
+        public StackController LastStack => ActiveLevel.activeStacks[^1];
+        StackController NewStack => ActiveLevel.NewStack;
 
         private Vector3 levelFirstPosition = new Vector3(0, -.5f, 5f);
         private GameData GameData => GameManager.Instance.GameData;
@@ -52,14 +52,14 @@ namespace Case_2
         {
             if(!IsStackCreateOpen)
                 return;
-            ActiveLevels.CreateStackPiece();
+            ActiveLevel.CreateStackPiece();
         }
 
         void CreateNewStack()
         {
-            if (ActiveLevels.activeStacks.Count < 10)
+            if (ActiveLevel.activeStacks.Count < 10)
             {
-                ActiveLevels.CreateFullPieceStack();
+                ActiveLevel.CreateFullPieceStack();
             }
             else
             {
@@ -79,7 +79,7 @@ namespace Case_2
 
         void SetActiveLevel()
         {
-            ActiveLevels = activeLevels[^1];
+            ActiveLevel = activeLevels[^1];
         }
 
         void GameSateListener(GameState currentState)

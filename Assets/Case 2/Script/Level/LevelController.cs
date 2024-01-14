@@ -54,8 +54,8 @@ namespace Case_2
             }
             else // iki farklı stack durumu
             {
-                CreateTrashStackPiece(xBackSize, xFrontSize, distanceStacks, isRight);
-                CreateNecessaryStackPiece(xBackSize, distanceStacks, isRight);
+                SpawnTrashStackPiece(xBackSize, xFrontSize, distanceStacks, isRight);
+                SpawnNecessaryStackPiece(xBackSize, distanceStacks, isRight);
             }
 
             materialCounter++;
@@ -69,12 +69,12 @@ namespace Case_2
             Vector3 stackPosition = Vector3.zero;
             stackPosition.z = ZDistance + NewStack.ZBoundsSize / 2;
             stackPosition.x = GameData.CreateXPositions[Random.Range(0, 2)];
-            StackData transformData = new StackData(stackPosition, GetNewStackScale(), GetStackMaterial());
-            NewStack.SetStackData(transformData);
+            StackData stackData = new StackData(stackPosition, GetNewStackScale(), GetStackMaterial());
+            NewStack.SetStackData(stackData);
             NewStack.IsMovementOpen = true;
         }
 
-        void CreateNecessaryStackPiece(float xBackSize, float distanceStacks, bool isRight)
+        void SpawnNecessaryStackPiece(float xBackSize, float distanceStacks, bool isRight)
         {
             RemoveNewStack();
 
@@ -90,13 +90,13 @@ namespace Case_2
                 , stack.transform.localScale.y
                 , stack.transform.localScale.z);
 
-            StackData transformData = new StackData(stackPosition, stackScale, GetStackMaterial());
-            stack.SetStackData(transformData);
+            StackData stackData = new StackData(stackPosition, stackScale, GetStackMaterial());
+            stack.SetStackData(stackData);
             activeStacks.Add(stack);
             SoundManager.Instance.PlaySound(SoundType.CutSound, false);
         }
 
-        void CreateTrashStackPiece(float xBackSize, float xFrontSize, float distanceStacks, bool isRight)
+        void SpawnTrashStackPiece(float xBackSize, float xFrontSize, float distanceStacks, bool isRight)
         {
             int factor = isRight ? 1 : -1; // sağsol pozisyon ayarlamak için
             var stack = LeanPool.Spawn(GameData.StackPrefab, transform);
@@ -107,9 +107,10 @@ namespace Case_2
                                factor * distanceStacks / 2f;
             Vector3 stackScale = new Vector3(xFrontSize - (xBackSize - distanceStacks),
                 stack.transform.localScale.y, stack.transform.localScale.z);
-            StackData transformData = new StackData(stackPosition, stackScale, GetStackMaterial());
-            stack.SetStackData(transformData);
+            StackData stackData = new StackData(stackPosition, stackScale, GetStackMaterial());
+            stack.SetStackData(stackData);
             stack.OpenPhysics(!isRight ? Vector3.forward : -Vector3.forward);
+            LeanPool.Despawn(stack,2f);
         }
 
         void PerfectPlacementForNewStack()

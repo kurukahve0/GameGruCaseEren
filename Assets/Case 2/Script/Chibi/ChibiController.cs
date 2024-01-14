@@ -123,7 +123,7 @@ namespace Case_2
         {
             DOTween.Sequence()
                 .Append(
-                    transform.DOMoveZ(LevelManager.Instance.ActiveLevels.FinishLineTransform.position.z, 1))
+                    transform.DOMoveZ(LevelManager.Instance.ActiveLevel.FinishLineTransform.position.z, 1))
                 .AppendCallback(() =>
                 {
                     chibiAnimator.SetTrigger("Dance");
